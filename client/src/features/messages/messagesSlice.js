@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import api from '../../api/axios'
 
 const initialState = {
   messages:[]
@@ -12,8 +11,8 @@ export const messagesSlice = createSlice({
   initialState,
   reducers: {
   },
-  // extraReducers:(builder)={
-  // }
+  extraReducers:{
+  }
 })
 
 // Action creators are generated for each case reducer function
