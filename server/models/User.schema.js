@@ -4,6 +4,12 @@ const { Schema, Types } = mongoose;
 
 const userSchema = new Schema(
   {
+    clerk_id: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+    },
     email: {
       type: String,
       required: true,
