@@ -14,10 +14,12 @@ const storySchema = new Schema(
     content: {
       type: String,
       trim: true,
+      default: ""
     },
 
     media_url: {
       type: String,
+      trim:true
     },
 
     media_type: {
@@ -40,6 +42,7 @@ const storySchema = new Schema(
 
     background_color: {
       type: String,
+      default: "#000000",
     },
 
     // ✅ FIXED: inside schema
@@ -53,6 +56,8 @@ const storySchema = new Schema(
     minimize: false,
   }
 );
+
+storySchema.index({ user: 1, createdAt: -1 });
 
 // ✅ Auto-delete after expiry
 storySchema.index({ expires_at: 1 }, { expireAfterSeconds: 0 });
