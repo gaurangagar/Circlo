@@ -1,6 +1,6 @@
-import User from "../models/User.schema";
-import Message from "../models/Message.schema";
-import uploadImage from "../utils/uploadImage";
+import User from "../models/User.schema.js";
+import Message from "../models/Message.schema.js";
+import { uploadImage } from "../utils/uploadImage.js";
 
 const connections = {};
 
@@ -43,7 +43,7 @@ export const sseController = async (req, res) => {
 
 export const sendMessage = async (req, res) => {
   try {
-    const { userId } = req.auth;
+    const { userId } = req.auth();
     const { toUserId, text } = req.body;
 
     const sender = await User.findOne({ clerk_id: userId });
@@ -102,7 +102,7 @@ export const sendMessage = async (req, res) => {
 
 export const getChatMessages = async (req, res) => {
   try {
-    const { userId } = req.auth;
+    const { userId } = req.auth();
     const { otherUserId } = req.params;
 
     const currentUser = await User.findOne({ clerk_id: userId });
@@ -135,7 +135,7 @@ export const getChatMessages = async (req, res) => {
 
 export const getUserRecentMessages = async (req, res) => {
   try {
-    const { userId } = req.auth;
+    const { userId } = req.auth();
 
     const cacheKey = `recent:${userId}`;
 

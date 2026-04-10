@@ -4,7 +4,7 @@ import { uploadImage } from "../utils/uploadImage.js";
 
 export const createStory = async (req, res) => {
   try {
-    const { userId } = req.auth;
+    const { userId } = req.auth();
     const { content, media_type, background_color } = req.body;
 
     const user = await User.findOne({ clerk_id: userId });
@@ -102,7 +102,7 @@ export const getUserStories = async (req, res) => {
 
 export const viewStory = async (req, res) => {
   try {
-    const { userId } = req.auth;
+    const { userId } = req.auth();
     const { storyId } = req.params;
 
     const user = await User.findOne({ clerk_id: userId });
@@ -141,7 +141,7 @@ export const viewStory = async (req, res) => {
 
 export const deleteStory = async (req, res) => {
   try {
-    const { userId } = req.auth;
+    const { userId } = req.auth();
     const { storyId } = req.params;
 
     const user = await User.findOne({ clerk_id: userId });

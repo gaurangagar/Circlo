@@ -1,4 +1,4 @@
-import User from "../models/user.model.js";
+import User from "../models/User.schema.js";
 
 export const generateUsername = async (base) => {
   let username = base.toLowerCase().replace(/[^a-z0-9]/g, "");

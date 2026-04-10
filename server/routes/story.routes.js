@@ -1,13 +1,13 @@
 import express from "express";
 import { requireAuth } from "@clerk/express";
-import upload from "../configs/multer.js";
+import upload from "../config/multer.js";
 import {
   createStory,
   getStories,
   getUserStories,
   viewStory,
   deleteStory,
-} from "../controllers/story.controller.js";
+} from "../controllers/story.controllers.js";
 
 const router = express.Router();
 

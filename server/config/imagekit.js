@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();   // ✅ ADD THIS HERE
+
 import ImageKit from "imagekit";
 
 const imagekit = new ImageKit({

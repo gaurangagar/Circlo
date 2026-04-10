@@ -5,8 +5,8 @@ import {
     getFeed, 
     getUserPosts, 
     deletePost 
-} from '../controllers/postController.js'
-import { upload } from '../configs/multer.js';
+} from '../controllers/post.controllers.js'
+import upload from '../config/multer.js'
 import { requireAuth } from '@clerk/express'
 
 const router=express.Router()

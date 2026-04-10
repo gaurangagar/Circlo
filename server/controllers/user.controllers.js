@@ -1,11 +1,12 @@
-import User from "../models/User.schema";
-import generateUsername from "../utils/username.utils";
+import User from "../models/User.schema.js";
+import { generateUsername } from "../utils/username.utils.js";
 import Connection from "../models/Connection.schema.js";
-import uploadImage from '../utils/uploadImage.js';
+import { uploadImage } from '../utils/uploadImage.js';
 
 export const syncUser = async (req, res) => {
   try {
-    const { userId } = req.auth;
+    const { userId } = req.auth();
+    console.log("AUTH:", req.auth());
     if (!userId) {
       return res.status(401).json({
         success: false,
@@ -58,7 +59,7 @@ export const syncUser = async (req, res) => {
 
 export const updateProfilePicture = async (req, res) => {
   try {
-    const { userId } = req.auth;
+    const { userId } = req.auth();
 
     // 1. Auth check
     if (!userId) {
@@ -108,7 +109,7 @@ export const updateProfilePicture = async (req, res) => {
 
 export const getCurrentUser = async (req, res) => {
   try {
-    const { userId } = req.auth;
+    const { userId } = req.auth();
 
     // 1. Auth check
     if (!userId) {
@@ -160,7 +161,7 @@ export const getCurrentUser = async (req, res) => {
 
 export const updateUserData = async (req, res) => {
   try {
-    const { userId } = req.auth;
+    const { userId } = req.auth();
 
     // 1. Auth check
     if (!userId) {
@@ -215,7 +216,7 @@ export const updateUserData = async (req, res) => {
 
 export const discoverUser = async (req, res) => {
   try {
-    const { userId } = req.auth;
+    const { userId } = req.auth();
 
     // 1. Auth check
     if (!userId) {
@@ -272,7 +273,7 @@ export const discoverUser = async (req, res) => {
 
 export const followUser = async (req, res) => {
   try {
-    const { userId } = req.auth;
+    const { userId } = req.auth();
 
     // 1. Auth check
     if (!userId) {
@@ -339,7 +340,7 @@ export const followUser = async (req, res) => {
 
 export const unfollowUser = async (req, res) => {
   try {
-    const { userId } = req.auth;
+    const { userId } = req.auth();
 
     // 1. Auth check
     if (!userId) {
@@ -403,7 +404,7 @@ export const unfollowUser = async (req, res) => {
 
 export const sendConnectionRequest = async (req, res) => {
   try {
-    const { userId } = req.auth;
+    const { userId } = req.auth();
 
     // 1. Auth check
     if (!userId) {
@@ -476,7 +477,7 @@ export const sendConnectionRequest = async (req, res) => {
 
 export const getUserConnections = async (req, res) => {
   try {
-    const { userId } = req.auth;
+    const { userId } = req.auth();
 
     // 1. Auth check
     if (!userId) {
@@ -517,7 +518,7 @@ export const getUserConnections = async (req, res) => {
 
 export const acceptConnectionRequest = async (req, res) => {
   try {
-    const { userId } = req.auth;
+    const { userId } = req.auth();
     const { requestId } = req.body;
 
     const dbUser = await User.findOne({ clerk_id: userId });
@@ -597,7 +598,7 @@ export const getUserProfiles = async (req, res) => {
 
 export const getPendingRequests = async (req, res) => {
   try {
-    const { userId } = req.auth;
+    const { userId } = req.auth();
 
     // 1. Auth check
     if (!userId) {

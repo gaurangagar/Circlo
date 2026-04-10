@@ -1,10 +1,10 @@
-import User from "../models/User.schema";
-import Post from "../models/Post.schema";
-import uploadImage from '../utils/uploadImage.js';
+import User from "../models/User.schema.js";
+import Post from "../models/Post.schema.js";
+import { uploadImage } from '../utils/uploadImage.js';
 
 export const addPost = async (req, res) => {
   try {
-    const { userId } = req.auth;
+    const { userId } = req.auth();
 
     // 1. Auth check
     if (!userId) {
@@ -69,7 +69,7 @@ export const addPost = async (req, res) => {
 
 export const toggleLikePost = async (req, res) => {
   try {
-    const { userId } = req.auth;
+    const { userId } = req.auth();
     const { postId } = req.params;
 
     // 1. Auth check
@@ -205,7 +205,7 @@ export const getUserPosts = async (req, res) => {
 
 export const deletePost = async (req, res) => {
   try {
-    const { userId } = req.auth;
+    const { userId } = req.auth();
     const { postId } = req.params;
 
     // 1. Auth check
