@@ -50,6 +50,8 @@ export const addPost = async (req, res) => {
       image_urls: imageUrls,
     });
 
+    await redisClient.del("feed:1:10");
+
     return res.status(201).json({
       success: true,
       message: "Post created successfully",
@@ -134,6 +136,19 @@ export const getFeed = async (req, res) => {
   try {
     const { page = 1, limit = 10 } = req.query;
 
+    const cacheKey = `feed:${page}:${limit}`;
+
+    // Check cache
+    const cached = await redisClient.get(cacheKey);
+
+    if (cached) {
+      return res.json({
+        success: true,
+        data: JSON.parse(cached),
+        source: "cache",
+      });
+    }
+
     const skip = (page - 1) * limit;
 
     const posts = await Post.find()
@@ -141,6 +156,10 @@ export const getFeed = async (req, res) => {
       .skip(skip)
       .limit(parseInt(limit))
       .populate("user", "username full_name profile_picture");
+
+
+    // Store in Redis (TTL 60s)
+    await redisClient.setEx(cacheKey, 60, JSON.stringify(posts));
 
     return res.status(200).json({
       success: true,

@@ -1,9 +1,10 @@
 import User from "../models/User.schema";
 import Message from "../models/Message.schema";
-import UploadImage from '../utils/uploadImage'
+import uploadImage from "../utils/uploadImage";
+
 const connections = {};
 
-export const sseController = (req, res) => {
+export const sseController = async (req, res) => {
   try {
     const { userId } = req.params;
     console.log("New client connected", userId);
@@ -22,8 +23,11 @@ export const sseController = (req, res) => {
     res.write(`data: Connected to SSE stream\n\n`);
 
     // Heartbeat
-    const interval = setInterval(() => {
+    const interval = setInterval(async () => {
       res.write(`: keep-alive\n\n`);
+
+      await redisClient.set(`online:${userId}`, "true");
+      await redisClient.expire(`online:${userId}`, 30);
     }, 20000);
 
     req.on("close", () => {
@@ -104,10 +108,10 @@ export const getChatMessages = async (req, res) => {
     const currentUser = await User.findOne({ clerk_id: userId });
 
     if (!currentUser) {
-    return res.status(404).json({
+      return res.status(404).json({
         success: false,
         message: "User not found",
-    });
+      });
     }
     const messages = await Message.find({
       $or: [
@@ -133,6 +137,18 @@ export const getUserRecentMessages = async (req, res) => {
   try {
     const { userId } = req.auth;
 
+    const cacheKey = `recent:${userId}`;
+
+    const cached = await redisClient.get(cacheKey);
+
+    if (cached) {
+      return res.json({
+        success: true,
+        data: JSON.parse(cached),
+        source: "cache",
+      });
+    }
+
     const currentUser = await User.findOne({ clerk_id: userId });
 
     const messages = await Message.find({
@@ -151,6 +167,9 @@ export const getUserRecentMessages = async (req, res) => {
         conversations[otherUserId] = msg;
       }
     });
+
+    // store cache
+    await redisClient.setEx(cacheKey, 30, JSON.stringify(messages));
 
     return res.status(200).json({
       success: true,
