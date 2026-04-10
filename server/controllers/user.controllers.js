@@ -1,6 +1,7 @@
 import User from "../models/User.schema";
 import generateUsername from "../utils/username.utils";
 import Connection from "../models/Connection.schema.js";
+import uploadImage from '../utils/uploadImage.js';
 
 export const syncUser = async (req, res) => {
   try {
@@ -55,9 +56,9 @@ export const syncUser = async (req, res) => {
   }
 };
 
-export const updateProfilePicture = async (req, res) =>{
-    try {
-        const { userId } = req.auth;
+export const updateProfilePicture = async (req, res) => {
+  try {
+    const { userId } = req.auth;
 
     // 1. Auth check
     if (!userId) {
@@ -95,15 +96,15 @@ export const updateProfilePicture = async (req, res) =>{
       message: "Profile picture updated",
       data: dbUser,
     });
-    } catch (error) {
-        console.error("updateProfilePicture error:", error);
-        
-        return res.status(500).json({
-        success: false,
-        message: "Internal Server Error",
-        });
-    }
-}
+  } catch (error) {
+    console.error("updateProfilePicture error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
 
 export const getCurrentUser = async (req, res) => {
   try {
@@ -235,8 +236,7 @@ export const discoverUser = async (req, res) => {
     }
 
     const connections = await Connection.find({
-      $or: [{ from_user_id: dbUser._id }, 
-        { to_user_id: dbUser._id }],
+      $or: [{ from_user_id: dbUser._id }, { to_user_id: dbUser._id }],
     });
 
     const excludedUserIds = new Set();
@@ -310,7 +310,7 @@ export const followUser = async (req, res) => {
       });
     }
 
-    if (dbUser.following.some(id => id.toString() === targetUserId)) {
+    if (dbUser.following.some((id) => id.toString() === targetUserId)) {
       return res.status(400).json({
         success: false,
         message: "Already following this user",
@@ -545,10 +545,10 @@ export const acceptConnectionRequest = async (req, res) => {
       });
     }
     if (connection.status === "accepted") {
-        return res.status(400).json({
-            success: false,
-            message: "Already accepted",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Already accepted",
+      });
     }
 
     connection.status = "accepted";
@@ -637,5 +637,3 @@ export const getPendingRequests = async (req, res) => {
     });
   }
 };
-
-
