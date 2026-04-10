@@ -1,41 +1,57 @@
 import mongoose, { Types } from "mongoose";
 
-const messageSchema=new mongoose.Schema(
-    {
-    from_user_id:{
-        type:Types.ObjectId,
-        ref:'User',
-        required:true
+const messageSchema = new mongoose.Schema(
+  {
+    from_user_id: {
+      type: Types.ObjectId,
+      ref: "User",
+      required: true,
     },
-    to_user_id:{
-        type:Types.ObjectId,
-        ref:'User',
-        required:true
+    to_user_id: {
+      type: Types.ObjectId,
+      ref: "User",
+      required: true,
     },
-    text:{
-        type:String,
-        trim:true
+    text: {
+      type: String,
+      trim: true,
+      default: "",
     },
-    message_type:{
-        type:String,
-        enum:['text','image'],
-        required:true
+    message_type: {
+      type: String,
+      enum: ["text", "image"],
+      required: true,
     },
-    media_url:{
-        type:String
+    media_url: {
+      type: String,
+      default: "",
+      trim:true
     },
-    seen:{
-        type:Boolean,
-        default:false
+    seen: {
+      type: Boolean,
+      default: false,
     },
     seen_at: {
       type: Date,
     },
-},{
-    timestamps:true,
-    minimize:false
-}
-)
+  },
+  {
+    timestamps: true,
+    minimize: false,
+  },
+);
+
+messageSchema.index({
+  from_user_id: 1,
+  to_user_id: 1,
+  createdAt: -1,
+});
+
+messageSchema.index({
+  to_user_id: 1,
+  from_user_id: 1,
+  createdAt: -1,
+});
 
 messageSchema.pre("validate", function (next) {
   if (this.message_type === "text" && !this.text) {
@@ -49,6 +65,6 @@ messageSchema.pre("validate", function (next) {
   next();
 });
 
-const Message=mongoose.model('Message',messageSchema);
+const Message = mongoose.model("Message", messageSchema);
 
 export default Message;
